@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="utf-8">
+		<title>Книга расходов</title>
+		<link href="css/style.css" rel="stylesheet">
+		<script type="text/javascript" src="js/main.js"></script>
+		<script type="text/javascript" src="js/tcal.js"></script>
+	</head>
+	<body>
+		<input type="text" name="product" id="product" placeholder="Название товара" />
+		<input type="text" name="price" id="price" placeholder="Цена в рублях" onKeyPress="onlyNum()" />
+		<input type="text" name="date" class="tcal" id="date" value="" placeholder="Выберите дату в календаре" />
+		<button id="saveBtn">Сохранить</button>
+		<br />
+		<input type="text" name="dfilter" class="tcal hidden" id="dfilter" value="" placeholder="Введите дату для фильтра" />
+		<button class="hidden" id="dateFilterBtn">Применить</button>
+		<ul class="costs" id="costsList"></ul>
+	</body>
+</html>
