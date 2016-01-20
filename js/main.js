@@ -7,6 +7,12 @@ var costsList;
 var cost = {};
 var costsArray = [];
 var i = 0;
+var newLi;
+var newLiCount = 0;
+var priceNum;
+var priceFilterSum = 0;
+var priceSum = 0;
+var dateFilter;
 
 function docReady() {
 //console.log("Document ready");
@@ -59,43 +65,69 @@ function rewriteCostsList() {
 	costsList.innerHTML = '';
 
 	for(var j = 0; j < i; j++) {
-		var newLi = document.createElement('li');
-		newLi.innerHTML = costsArray[j].name + " - " + costsArray[j].price + " р.";
+		newLi = document.createElement('li');
+		newLi.innerHTML = costsArray[j].date + " " + costsArray[j].name + " - " + costsArray[j].price + " р.";
 		costsList.insertBefore(newLi, costsList.firstChild);
+		priceNum = Number(costsArray[j].price);
 	};
 
-	var allPrice = document.createElement('li');
-
-	allPrice.innerHTML = "Общая сумма - " + getPriceSum() + " р.";
-
-	costsList.appendChild(allPrice);
+	showPriceSum(priceNum);
 
 	doVisibleFilter();
-};
-
-function getPriceSum() {
-	var priceSum = 0;
-
-	for(var j = 0; j < i; j++) {
-		priceSum += parseInt(costsArray[j].price); 
-	};
-
-	return priceSum;
 };
 
 function doVisibleFilter() {
 	document.getElementById('dfilter').classList.remove('hidden');
 	document.getElementById('dateFilterBtn').classList.remove('hidden');
 
-	document.getElementById('dateFilterBtn').addEventListener('click', filterCostsList);
+	document.getElementById('dateFilterBtn').addEventListener('click', saveDateForFilter);
 };
 
-function filterCostsList() {
-	console.log("Enter to filterCostsList function");
+function saveDateForFilter() {
+//console.log("Enter to filterCostsList function");
 
-	var dateFilter = document.getElementById('date');
+	dateFilter = document.getElementById('dfilter').value;
+//console.log(dateFilter);
+	document.getElementById('dfilter').value = '';
 
-	console.log(s_date);
+	rewriteFilteredCostsList();
+};
+
+function rewriteFilteredCostsList() {
+	costsList.innerHTML = '';
+	priceSum = 0;
+
+	for(var j = 0; j < i; j++) {
+		if (costsArray[j].date == dateFilter) {
+			newLi = document.createElement('li');
+			newLi.innerHTML = costsArray[j].date + " " + costsArray[j].name + " - " + costsArray[j].price + " р.";
+			costsList.insertBefore(newLi, costsList.firstChild);
+			newLiCount++;
+			priceFilterSum += Number(costsArray[j].price);
+		};
+	};
+
+	if (newLiCount > 0) {
+		showPriceSum(priceFilterSum);
+		
+	}else {
+		newLi = document.createElement('li');
+		newLi.innerHTML = "Нет записей на выбранную вами дату";
+		costsList.appendChild(newLi);
+	};	
+};
+
+function showPriceSum(num) {
+	var priceSumLi = document.createElement('li');
+
+	priceSumLi.innerHTML = "Общая сумма - " + getPriceSum(num) + " р.";
+
+	costsList.appendChild(priceSumLi);
+};
+
+function getPriceSum(num) {
+	priceSum += num;
+	return priceSum;
 };
 
 document.addEventListener('DOMContentLoaded', docReady);
