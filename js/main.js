@@ -4,15 +4,8 @@
 
 var saveBtn;
 var costsList;
-var cost = {};
 var costsArray = [];
 var i = 0;
-var newLi;
-var newLiCount = 0;
-var priceNum;
-var priceFilterSum = 0;
-var priceSum = 0;
-var dateFilter;
 
 function docReady() {
 //console.log("Document ready");
@@ -38,7 +31,7 @@ function saveBtnClick() {
 			return;
 	};
 
-	cost = { name: document.getElementById('product').value, 
+	var cost = { name: document.getElementById('product').value, 
 			 price: document.getElementById('price').value,
 			 date: document.getElementById('date').value
 			};
@@ -60,18 +53,20 @@ console.log(cost.date);
 };
 
 function rewriteCostsList() {
+	var priceSum = 0;
+
 	costsList = document.getElementById('costsList');
 
 	costsList.innerHTML = '';
 
 	for(var j = 0; j < i; j++) {
-		newLi = document.createElement('li');
+		var newLi = document.createElement('li');
 		newLi.innerHTML = costsArray[j].date + " " + costsArray[j].name + " - " + costsArray[j].price + " р.";
 		costsList.insertBefore(newLi, costsList.firstChild);
-		priceNum = Number(costsArray[j].price);
+		priceSum += Number(costsArray[j].price);
 	};
 
-	showPriceSum(priceNum);
+	showPriceSum(priceSum);
 
 	doVisibleFilter();
 };
@@ -86,16 +81,17 @@ function doVisibleFilter() {
 function saveDateForFilter() {
 //console.log("Enter to filterCostsList function");
 
-	dateFilter = document.getElementById('dfilter').value;
+	var dateFilter = document.getElementById('dfilter').value;
 //console.log(dateFilter);
 	document.getElementById('dfilter').value = '';
 
-	rewriteFilteredCostsList();
+	rewriteFilteredCostsList(dateFilter);
 };
 
-function rewriteFilteredCostsList() {
+function rewriteFilteredCostsList(dateFilter) {
 	costsList.innerHTML = '';
-	priceSum = 0;
+	var priceSum = 0;
+	var newLiCount = 0;
 
 	for(var j = 0; j < i; j++) {
 		if (costsArray[j].date == dateFilter) {
@@ -103,12 +99,12 @@ function rewriteFilteredCostsList() {
 			newLi.innerHTML = costsArray[j].date + " " + costsArray[j].name + " - " + costsArray[j].price + " р.";
 			costsList.insertBefore(newLi, costsList.firstChild);
 			newLiCount++;
-			priceFilterSum += Number(costsArray[j].price);
+			priceSum += Number(costsArray[j].price);
 		};
 	};
 
 	if (newLiCount > 0) {
-		showPriceSum(priceFilterSum);
+		showPriceSum(priceSum);
 		
 	}else {
 		newLi = document.createElement('li');
@@ -117,18 +113,14 @@ function rewriteFilteredCostsList() {
 	};	
 };
 
-function showPriceSum(num) {
+function showPriceSum(sum) {
 	var priceSumLi = document.createElement('li');
 
-	priceSumLi.innerHTML = "Общая сумма - " + getPriceSum(num) + " р.";
+	priceSumLi.innerHTML = "Общая сумма - " + sum + " р.";
 
 	costsList.appendChild(priceSumLi);
 };
 
-function getPriceSum(num) {
-	priceSum += num;
-	return priceSum;
-};
 
 document.addEventListener('DOMContentLoaded', docReady);
 
