@@ -1,9 +1,10 @@
 "use strict";
 
+var fs = require('fs');
 var saveBtn;
-var costsList;
 var costsArray = [];
 var i = 0;
+var costsList;
 
 function docReady() {
 	saveBtn = document.getElementById('saveBtn');
@@ -20,6 +21,7 @@ function onlyNum() {
 };
 
 function saveBtnClick() {
+	var saveRes = document.getElementById('saveRes');
 
 	if( document.getElementById('product').value=='' || 
 		document.getElementById('price').value=='' || 
@@ -34,6 +36,11 @@ function saveBtnClick() {
 			};
 
 	costsArray[i++] = cost;
+
+	fs.writeFile('costsnotes.txt', costsArray, function(err) {
+		if(err) throw new Error("Ошибка сохранения данных");
+		alert("Данные успешно сохранены");
+	});
 
 	document.getElementById('product').value = '';
 	document.getElementById('price').value = '';
@@ -71,6 +78,11 @@ function rewriteCostsList(dateFilter) {
 
 	var newLiCount = 0;
 
+	fs.readFile('costsnotes.txt', function(err, data) {
+		if(err) throw new Error("Ошибка чтения данных");
+		costsArray = data;
+	});	
+		
 	for(var j = 0; j < i; j++) {
 		if ( (dateFilter == undefined) || (dateFilter == costsArray[j].date) ) {
 			var newLi = document.createElement('li');
@@ -98,5 +110,6 @@ function showPriceSum(sum) {
 
 	costsList.appendChild(priceSumLi);
 };
+
 
 document.addEventListener('DOMContentLoaded', docReady);
